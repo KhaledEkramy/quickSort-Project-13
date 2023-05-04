@@ -1,24 +1,85 @@
-# Compiled class file
-*.class
+public class QuickSort {
+    private int[]arr ;
+    private int numSwaps ;
+    private int numCopies ;
+    
+    public QuickSort(int arr[]){
+        this.arr = arr ;
+        this.numCopies = 0 ;
+        this.numSwaps = 0 ;
+    }
+    
+    public void quickSort(String pivotType) {
+        quickSortHelper(0, arr.length - 1, pivotType);
+    }
 
-# Log file
-*.log
+    public void quickSortHelper(int low, int high, String pivotType) {
+        if (low < high) {
+            int pivotIndex = choosePivot(low, high, pivotType);
+            int partitionIndex = partition(low, high, pivotIndex);
+            quickSortHelper(low, partitionIndex - 1, pivotType);
+            quickSortHelper(partitionIndex + 1, high, pivotType);
+        }
+    }
 
-# BlueJ files
-*.ctxt
+    public int choosePivot(int low, int high, String pivotType) {
+        switch (pivotType) {
+            case "first" -> {
+                return low;
+            }
+            case "last" -> {
+                return high;
+            }
+            case "random" -> {
+                return (int) (Math.random() * (high - low + 1) + low);
+            }
+            case "median" -> {
+                int mid = (low + high) / 2;
+                if(arr[low] > arr[mid])
+                    swap(low,mid) ;
+                else if(arr[low] > arr[high])
+                    swap(low,high) ;
+                else if(arr[mid] > arr[high])
+                    swap(mid,high) ;
+                
+                swap(mid,high-1) ;
+                
+                return high ;
+            }
+            default -> {
+                System.out.println("Invalid pivot type. Using first element as pivot.");
+                return low;
+            }
+        }
+    }
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+    public int partition(int low, int high, int pivotIndex) {
+        int leftPointer = low ;
+        int righPointer = high ;
+        
+        swap(pivotIndex, high);
+        int pivot = high ;
+        
+        numSwaps++;
+        
+        while(leftPointer < righPointer ) {
+            while(arr[leftPointer] <= arr[pivotIndex] && leftPointer < righPointer ){
+                leftPointer ++ ;
+            }
+            
+            while(arr[righPointer] >= arr[pivotIndex] && leftPointer < righPointer){
+                righPointer-- ;
+            }
+            numCopies++;
+            swap(leftPointer ,pivot );
+            numSwaps++;
+        }
+        return leftPointer;
+    }
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+    public void swap(int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
